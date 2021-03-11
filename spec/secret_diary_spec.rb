@@ -21,6 +21,7 @@ RSpec.describe SecretDiary do
   context "when locked" do
     it "refuses to be read" do
       # Arrange
+      # Our doubles can be called anything we want
       foo = double(:my_notebook)
       secret_diary = SecretDiary.new(foo)
       secret_diary.lock
@@ -50,11 +51,11 @@ RSpec.describe SecretDiary do
   context "when unlocked" do
     it "gets read" do
       # Arrange
-      notebook_double = double(:my_notebook, :read => "my secret") # This is a shorthand for stubbing methods§
+      notebook_double = double(:my_notebook, :read => "my secret") # This is a shorthand for stubbing methods
       secret_diary = SecretDiary.new(notebook_double)
       secret_diary.unlock
 
-      # This is another way to stub a method on a double
+      # Below is another way to stub a method on a double
       # allow(notebook_double).to receive(:read).and_return("my secret")
 
       # Act + Assert
@@ -72,9 +73,21 @@ RSpec.describe SecretDiary do
       secret_diary.read
 
       # Assert
+      # Using spies, we can wait until the end of the test to assert which methods were called
+      # (note that "have_received" is in the past tense).
       expect(foo).to have_received(:read)
     end
 
-    pending "gets written"
+    it "gets written" do
+      diary_double = double(:my_diary)
+      diary_entry = "Some days I don't brush my teeth"
+      secret_diary = SecretDiary.new(diary_double)
+      secret_diary.unlock
+
+      # We can also specify that we want a method to be called with certain arguments.
+      expect(diary_double).to receive(:write).with(diary_entry)
+
+      secret_diary.write(diary_entry)
+    end
   end
 end
