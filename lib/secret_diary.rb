@@ -4,6 +4,23 @@
 #
 # Also don't add any other files.
 
+class Diary
+  def read
+  end
+
+  def write
+  end
+end
+
+class BetterDiary
+  def read
+  end
+
+  def write
+  end
+
+end
+
 class SecretDiary
   def initialize(diary)
     @diary = diary
